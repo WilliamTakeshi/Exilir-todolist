@@ -11,8 +11,18 @@ defmodule ToDoListWeb.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id,
-      email: user.email,
-      username: user.username}
+    %{id: user.id, email: user.email, username: user.username}
+  end
+
+  def render("sign_in.json", %{user: user}) do
+    %{
+      data: %{
+        user: %{
+          id: user.id,
+          email: user.email,
+          username: user.username
+        }
+      }
+    }
   end
 end

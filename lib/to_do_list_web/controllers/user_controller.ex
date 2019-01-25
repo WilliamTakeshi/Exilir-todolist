@@ -40,4 +40,19 @@ defmodule ToDoListWeb.UserController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def sign_in(conn, %{"login" => login, "password" => password}) do
+    case ToDoList.Auth.authenticate_user(login, password) do
+      {:ok, user} ->
+        conn
+        |> put_status(:ok)
+        |> render("sign_in.json", user: user)
+
+      {:error, message} ->
+        conn
+        |> put_status(:unauthorized)
+        |> put_view(ToDoListWeb.ErrorView)
+        |> render("401.json", message: message)
+    end
+  end
 end
