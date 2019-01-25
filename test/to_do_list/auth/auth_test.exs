@@ -6,8 +6,16 @@ defmodule ToDoList.AuthTest do
   describe "users" do
     alias ToDoList.Auth.User
 
-    @valid_attrs %{email: "some email", password_hash: "some password_hash", username: "some username"}
-    @update_attrs %{email: "some updated email", password_hash: "some updated password_hash", username: "some updated username"}
+    @valid_attrs %{
+      email: "some email",
+      password: "some password",
+      username: "some username"
+    }
+    @update_attrs %{
+      email: "some updated email",
+      password: "some updated password",
+      username: "some updated username"
+    }
     @invalid_attrs %{email: nil, password_hash: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -21,19 +29,20 @@ defmodule ToDoList.AuthTest do
 
     test "list_users/0 returns all users" do
       user = user_fixture()
-      assert Auth.list_users() == [user]
+      assert Auth.list_users() == [%User{user | password: nil}]
     end
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      assert Auth.get_user!(user.id) == user
+      assert Auth.get_user!(user.id) == %User{user | password: nil}
     end
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Auth.create_user(@valid_attrs)
       assert user.email == "some email"
-      assert user.password_hash == "some password_hash"
+      assert user.password == "some password"
       assert user.username == "some username"
+      assert Bcrypt.verify_pass("some password", user.password_hash)
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -44,14 +53,16 @@ defmodule ToDoList.AuthTest do
       user = user_fixture()
       assert {:ok, %User{} = user} = Auth.update_user(user, @update_attrs)
       assert user.email == "some updated email"
-      assert user.password_hash == "some updated password_hash"
+      assert user.password == "some updated password"
       assert user.username == "some updated username"
+      assert Bcrypt.verify_pass("some updated password", user.password_hash)
     end
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Auth.update_user(user, @invalid_attrs)
-      assert user == Auth.get_user!(user.id)
+      assert %User{user | password: nil} == Auth.get_user!(user.id)
+      assert Bcrypt.verify_pass("some password", user.password_hash)
     end
 
     test "delete_user/1 deletes the user" do

@@ -16,3 +16,5 @@ config :to_do_list, ToDoList.Repo,
   database: "to_do_list_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :bcrypt_elixir, :log_rounds, 4
