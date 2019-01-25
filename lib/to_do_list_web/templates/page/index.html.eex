@@ -32,4 +32,12 @@
       </li>
     </ul>
   </article>
+
+
+  <div id="react-app"></div>
 </section>
+
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/teste.js") %>"></script>
+
+
