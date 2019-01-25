@@ -17,7 +17,7 @@
             <img height= '65px' src="<%= Routes.static_path(@conn, "/images/phoenix_to_do_logo.png") %>" alt="Phoenix To Do List Logo"/>
           </a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><%= link "Sign in", to: Routes.user_path(@conn, :sign_in_web) %></li>
+            <li><%= link "Sign in", to: Routes.page_path(@conn, :sign_in) %></li>
           </ul>
         </div>
       </nav>

@@ -22,8 +22,12 @@ defmodule ToDoListWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/sign_in", UserController, :sign_in_web
-    get "/sign_up", UserController, :sign_up_web
+    get "/sign_in", PageController, :sign_in
+    get "/sign_up", PageController, :sign_up
+  end
+
+  scope "/", ToDoListWeb do
+    pipe_through [:browser, :ensure_authenticated_web]
   end
 
   scope "/api", ToDoListWeb do
@@ -47,6 +51,19 @@ defmodule ToDoListWeb.Router do
       |> put_status(:unauthorized)
       |> put_view(ToDoListWeb.ErrorView)
       |> render("401.json", message: "Unauthenticated user")
+      |> halt()
+    end
+  end
+
+  defp ensure_authenticated_web(conn, _opts) do
+    current_user_id = get_session(conn, :current_user_id)
+
+    if current_user_id do
+      conn
+    else
+      conn
+      |> put_status(:unauthorized)
+      |> render(:index, message: "Unauthenticated user")
       |> halt()
     end
   end

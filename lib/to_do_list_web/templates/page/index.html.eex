@@ -6,7 +6,7 @@
       <h5 class="header col s12 light">Do you wanna know how to bake a chocolate cake? Or what are the best place to visit in Rome? You can see our users' public lists to start you activies.</h5>
     </div>
     <div class="row center">
-      <%= link "Sign Up", to: Routes.user_path(@conn, :sign_up_web), class: "btn-large waves-effect waves-light orange" %>
+      <%= link "Sign Up", to: Routes.page_path(@conn, :sign_up), class: "btn-large waves-effect waves-light orange" %>
     </div>
     <br><br>
 
