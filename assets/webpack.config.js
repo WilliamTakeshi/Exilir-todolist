@@ -14,6 +14,7 @@ module.exports = (env, options) => ({
   },
   entry:  {
     app: __dirname + '/js/app.js',
+    sign_in: __dirname + '/js/authentication/SignIn.js',
   },
   output: {
     path: path.resolve(__dirname, '../priv/static/js'),
