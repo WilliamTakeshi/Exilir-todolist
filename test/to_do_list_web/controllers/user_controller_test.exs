@@ -3,6 +3,7 @@ defmodule ToDoListWeb.UserControllerTest do
 
   alias ToDoList.Auth
   alias ToDoList.Auth.User
+  alias Plug.Test
 
   @create_attrs %{
     email: "some email",
@@ -15,20 +16,37 @@ defmodule ToDoListWeb.UserControllerTest do
     username: "some updated username"
   }
   @invalid_attrs %{email: nil, password: nil, username: nil}
+  @current_user_attrs %{
+    email: "some current user email",
+    username: "some current user username",
+    password: "some current user password"
+  }
 
   def fixture(:user) do
     {:ok, user} = Auth.create_user(@create_attrs)
     user
   end
 
+  def fixture(:current_user) do
+    {:ok, current_user} = Auth.create_user(@current_user_attrs)
+    current_user
+  end
+
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    {:ok, conn: conn, current_user: current_user} = setup_current_user(conn)
+    {:ok, conn: put_req_header(conn, "accept", "application/json"), current_user: current_user}
   end
 
   describe "index" do
-    test "lists all users", %{conn: conn} do
+    test "lists all users", %{conn: conn, current_user: current_user} do
       conn = get(conn, Routes.user_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["data"] == [
+        %{
+          "id" => current_user.id,
+          "email" => current_user.email,
+          "username" => current_user.username
+        }
+      ]
     end
   end
 
@@ -90,5 +108,13 @@ defmodule ToDoListWeb.UserControllerTest do
   defp create_user(_) do
     user = fixture(:user)
     {:ok, user: user}
+  end
+
+  defp setup_current_user(conn) do
+    current_user = fixture(:current_user)
+
+    {:ok,
+     conn: Test.init_test_session(conn, current_user_id: current_user.id),
+     current_user: current_user}
   end
 end
