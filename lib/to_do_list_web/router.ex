@@ -22,6 +22,8 @@ defmodule ToDoListWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/sign_in", UserController, :sign_in_web
+    get "/sign_up", UserController, :sign_up_web
   end
 
   scope "/api", ToDoListWeb do

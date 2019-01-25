@@ -14,7 +14,6 @@ module.exports = (env, options) => ({
   },
   entry:  {
     app: __dirname + '/js/app.js',
-    teste: __dirname + '/js/teste.js',
   },
   output: {
     path: path.resolve(__dirname, '../priv/static/js'),

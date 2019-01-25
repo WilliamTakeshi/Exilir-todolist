@@ -57,4 +57,12 @@ defmodule ToDoListWeb.UserController do
         |> render("401.json", message: message)
     end
   end
+
+  def sign_in_web(conn, _params) do
+    render(conn, "sign_in.html")
+  end
+  def sign_up_web(conn, _params) do
+    render(conn, "sign_up.html")
+  end
+
 end
