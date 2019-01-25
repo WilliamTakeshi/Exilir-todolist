@@ -1,1 +1,3 @@
-trasrst
+<div id="react_sign_up"></div>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/sign_up.js") %>"></script>

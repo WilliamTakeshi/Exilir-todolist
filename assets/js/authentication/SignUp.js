@@ -8,8 +8,10 @@ export default class SignIn extends React.Component {
     super(props);
     this.state = {
       credentials: {
-        login: '',
-        password: ''
+        username: '',
+        email: '',
+        password: '',
+        password2: ''
       },
       error: ''
     }
@@ -20,12 +22,19 @@ export default class SignIn extends React.Component {
 
   _handleSubmit(e) {
     e.preventDefault();
-    axios.post('/api/users/sign_in', this.state.credentials)
-      .then(response => {
-        window.location.href = "/";
-      }).catch(error => {
-        this.setState({"error": error.response.data.errors.detail});
-      });
+    const password = this.state.credentials.password;
+    const password2 = this.state.credentials.password2;
+    if (password === password2) {
+      axios.post('/api/users', {"user": this.state.credentials})
+        .then(response => {
+          window.location.href = "/";
+        }).catch(error => {
+          this.setState({"error": error.response.data.errors.detail});
+        });
+    } else {
+      this.setState({"error": "Passwords must be the same"});
+    }
+
   }
 
   _renderError() {
@@ -57,7 +66,13 @@ export default class SignIn extends React.Component {
 
               <div className='row'>
                 <div className='input-field col s12'>
-                  <input className='validate' onChange={e => this._updateCredentials("login", e.target.value)}  type='text' value={this.state.credentials.login} name='login' id='login' placeholder="Enter your email or username"/>
+                  <input className='validate' onChange={e => this._updateCredentials("username", e.target.value)}  type='text' value={this.state.credentials.username} name='username' id='username' placeholder="Enter your username"/>
+                </div>
+              </div>
+
+              <div className='row'>
+                <div className='input-field col s12'>
+                  <input className='validate' onChange={e => this._updateCredentials("email", e.target.value)}  type='email' value={this.state.credentials.email} name='email' id='email' placeholder="Enter your email"/>
                 </div>
               </div>
 
@@ -65,9 +80,11 @@ export default class SignIn extends React.Component {
                 <div className='input-field col s12'>
                   <input onChange={e => this._updateCredentials("password", e.target.value)} className='validate' type='password' value={this.state.credentials.password} name='password' id='password' placeholder="Enter your password" />
                 </div>
-                <label >
-                  <a className='pink-text' href='#!'><b>Forgot Password?</b></a>
-                </label>
+              </div>
+              <div className='row'>
+                <div className='input-field col s12'>
+                  <input onChange={e => this._updateCredentials("password2", e.target.value)} className='validate' type='password' value={this.state.credentials.password2} name='password2' id='password2' placeholder="Repeat your password" />
+                </div>
               </div>
 
               <br />
@@ -96,5 +113,5 @@ export default class SignIn extends React.Component {
 
 ReactDOM.render(
   <SignIn />,
-  document.getElementById('react_sign_in'),
+  document.getElementById('react_sign_up'),
 );
