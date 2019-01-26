@@ -4,10 +4,11 @@ defmodule ToDoListWeb.ListController do
   alias ToDoList.Tasks
   alias ToDoList.Tasks.List
 
+
   action_fallback ToDoListWeb.FallbackController
 
   def index(conn, _params) do
-    lists = Tasks.list_lists()
+    lists = Tasks.list_lists(conn)
     render(conn, "index.json", lists: lists)
   end
 

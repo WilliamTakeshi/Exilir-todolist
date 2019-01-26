@@ -7,6 +7,7 @@ defmodule ToDoList.Tasks do
   alias ToDoList.Repo
 
   alias ToDoList.Tasks.List
+  alias ToDoListWeb.Helper
 
   @doc """
   Returns the list of lists.
@@ -17,8 +18,12 @@ defmodule ToDoList.Tasks do
       [%List{}, ...]
 
   """
-  def list_lists do
-    Repo.all(List)
+  def list_lists(conn) do
+    user_id = Helper.get_user_id(conn)
+
+    List
+    |> where(user_id: ^user_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +40,14 @@ defmodule ToDoList.Tasks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_list!(id), do: Repo.get!(List, id)
+  def get_list!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    List
+    |> where(user_id: ^user_id)
+    |> Repo.get!(id)
+
+  end
 
   @doc """
   Creates a list.
@@ -49,7 +61,8 @@ defmodule ToDoList.Tasks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_list(attrs \\ %{}) do
+  def create_list(conn, attrs \\ %{}) do
+    attrs = Map.put(attrs, :user_id, Helper.get_user_id(conn))
     %List{}
     |> List.changeset(attrs)
     |> Repo.insert()
@@ -85,8 +98,12 @@ defmodule ToDoList.Tasks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_list(%List{} = list) do
-    Repo.delete(list)
+  def delete_list(conn, %List{} = list) do
+    user_id = Helper.get_user_id(conn)
+
+    list
+    |> where(user_id: ^user_id)
+    |> Repo.delete()
   end
 
   @doc """
@@ -98,7 +115,7 @@ defmodule ToDoList.Tasks do
       %Ecto.Changeset{source: %List{}}
 
   """
-  def change_list(%List{} = list) do
+  def change_list( %List{} = list) do
     List.changeset(list, %{})
   end
 
