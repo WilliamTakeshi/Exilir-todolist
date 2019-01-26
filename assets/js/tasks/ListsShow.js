@@ -36,7 +36,7 @@ export default class ListsShow extends React.Component {
       .then(response => {
         this.setState({list: response.data.data});
         // window.location.href = "/";
-      }).catch(error => {
+      }).catch(_error => {
         this.setState({"error": "Error loading your list, please try again"});
       });
   }
@@ -45,9 +45,25 @@ export default class ListsShow extends React.Component {
     axios.post('/api/lists/' + listId + '/tasks', {task: {name: name, done: false}})
       .then(response => {
         this._addNewTaskToState(response.data.data)
-      }).catch(error => {
-        this.setState({"error": error.response.data.errors.detail});
+      }).catch(_error => {
+        this.setState({"error": "Error creating task, please try again"});
       });
+  }
+
+  _deleteTask(task) {
+    axios.delete('/api/lists/' + task.list_id + '/tasks/' + task.id)
+      .then(() => this._deleteTaskState(task))
+      .catch(_error => {
+        this.setState({"error": "Error deleting task, please try again"});
+      });
+  }
+
+  _deleteTaskState(task) {
+
+    const newData = update(this.state.list, 
+      {tasks: {$set: taskList.filter(t => t.id != task.id)}}
+    );
+    this.setState({"list": newData})
   }
 
   _handleRIEInputChange(value, task) {
@@ -58,8 +74,8 @@ export default class ListsShow extends React.Component {
     axios.put('/api/lists/' + task.list_id + '/tasks/' + task.id, {task: {[field]: value}})
       .then(response => {
         this._updateNewTaskToState(response.data.data)
-      }).catch(error => {
-        this.setState({"error": error.response.data.errors.detail});
+      }).catch(_error => {
+        this.setState({"error": "Error editing task, please try again"});
       });
   }
 
@@ -100,7 +116,7 @@ export default class ListsShow extends React.Component {
           value={task.name}
           change={name => this._handleRIEInputChange(name, task)}
           propName='name' />
-        <i className="small material-icons">delete</i>
+        <i className="small material-icons" onClick={() => this._deleteTask(task)}>delete</i>
       </div>
     )
   }
