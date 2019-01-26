@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import update from 'immutability-helper';
 import {RIEInput} from 'riek'
-
+import BasicModal from '../components/BasicModal.js'
 export default class ListsShow extends React.Component {
   constructor(props) {
     super(props);
@@ -16,7 +16,8 @@ export default class ListsShow extends React.Component {
         updated_at: '',
         tasks: [],
       },
-      error: ''
+      error: '',
+      showDeleteModal: false
     }
 
     this._addNewTaskToState = this._addNewTaskToState.bind(this);
@@ -55,6 +56,19 @@ export default class ListsShow extends React.Component {
       .then(() => this._deleteTaskState(task))
       .catch(_error => {
         this.setState({"error": "Error deleting task, please try again"});
+      });
+  }
+
+  _deleteList() {
+    axios.delete('/api/lists/' + this._getListId())
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch(_error => {
+        this.setState({
+          "error": "Error deleting list, please try again",
+          showDeleteModal: false
+        });
       });
   }
 
@@ -124,6 +138,14 @@ export default class ListsShow extends React.Component {
   render() {
     return (
       <div>
+        <BasicModal
+          show={this.state.showDeleteModal}
+          title="Caution!"
+          body="Are you sure you want to delete this list? It can not be recovered later."
+          okClick={() => this._deleteList()}
+          cancelClick={() => this.setState({showDeleteModal: false})}
+        />
+
         <h3>{this.state.list.name}</h3>
         <p>Created at, last updated at</p>
         {this._renderError()} 
@@ -141,6 +163,7 @@ export default class ListsShow extends React.Component {
           </div>
           {this.state.list.tasks.map(task => this._renderTask(task))}
         </center>
+        <button className="btn" onClick={() => this.setState({showDeleteModal: true})}>Modal</button>
       </div>
     )
   }

@@ -99,11 +99,8 @@ defmodule ToDoList.Tasks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_list(conn, %List{} = list) do
-    user_id = Helper.get_user_id(conn)
-
+  def delete_list(%List{} = list) do
     list
-    |> where(user_id: ^user_id)
     |> Repo.delete()
   end
 

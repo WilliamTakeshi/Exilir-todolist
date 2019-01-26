@@ -18,5 +18,6 @@ defmodule ToDoList.Tasks.List do
     |> cast(attrs, [:name, :public, :user_id])
     |> validate_required([:name, :public])
     |> cast_assoc(:user)
+    |> foreign_key_constraint(:tasks_id)
   end
 end
