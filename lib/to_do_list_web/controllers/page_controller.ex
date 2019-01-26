@@ -6,7 +6,7 @@ defmodule ToDoListWeb.PageController do
   def index(conn, _params) do
     case is_authenticated?(conn) do
       # TODO: write a plug for this
-      true -> conn |> redirect(to: Routes.page_path(conn, :my_to_do_list))
+      true -> conn |> redirect(to: Routes.page_path(conn, :lists))
       false -> render(conn, "index.html")
     end
 
@@ -16,7 +16,7 @@ defmodule ToDoListWeb.PageController do
     case is_authenticated?(conn) do
       true ->
         conn
-        |> redirect(to: Routes.page_path(conn, :my_to_do_list))
+        |> redirect(to: Routes.page_path(conn, :lists))
       false -> render(conn, "sign_in.html")
     end
 
@@ -24,13 +24,13 @@ defmodule ToDoListWeb.PageController do
 
   def sign_up(conn, _params) do
     case is_authenticated?(conn) do
-      true -> conn |> redirect(to: Routes.page_path(conn, :my_to_do_list))
+      true -> conn |> redirect(to: Routes.page_path(conn, :lists))
       false -> render(conn, "sign_up.html")
     end
   end
 
-  def my_to_do_list(conn, _params) do
-    render(conn, "my_to_do_list.html")
+  def lists(conn, _params) do
+    render(conn, "lists.html")
   end
 
   defp is_authenticated?(conn) do
