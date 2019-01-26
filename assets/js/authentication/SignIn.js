@@ -21,7 +21,7 @@ export default class SignIn extends React.Component {
   _handleSubmit(e) {
     e.preventDefault();
     axios.post('/api/users/sign_in', this.state.credentials)
-      .then(response => {
+      .then(_response => {
         window.location.href = "/";
       }).catch(error => {
         this.setState({"error": error.response.data.errors.detail});
@@ -73,7 +73,7 @@ export default class SignIn extends React.Component {
               <br />
               <center>
                 <div className='row'>
-                  <button type='submit' name='btn_login' className='col s12 btn btn-large waves-effect indigo'>Login</button>
+                  <button type='submit' name='btn_login' className='col s12 btn btn-large waves-effect light-blue darken-2'>Login</button>
                 </div>
               </center>
             </form>

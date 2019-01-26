@@ -30,6 +30,7 @@ defmodule ToDoListWeb.Router do
     pipe_through [:browser, :ensure_authenticated_web]
 
     get "/lists", PageController, :lists
+    get "/lists/new", PageController, :lists_new
   end
 
   scope "/api", ToDoListWeb do

@@ -17,6 +17,7 @@ module.exports = (env, options) => ({
     sign_in: __dirname + '/js/authentication/SignIn.js',
     sign_up: __dirname + '/js/authentication/SignUp.js',
     lists: __dirname + '/js/tasks/Lists.js',
+    lists_new: __dirname + '/js/tasks/ListsNew.js',
   },
   output: {
     path: path.resolve(__dirname, '../priv/static/js'),

@@ -62,7 +62,7 @@ defmodule ToDoList.Tasks do
 
   """
   def create_list(conn, attrs \\ %{}) do
-    attrs = Map.put(attrs, :user_id, Helper.get_user_id(conn))
+    attrs = Map.put(attrs, "user_id", Helper.get_user_id(conn))
     %List{}
     |> List.changeset(attrs)
     |> Repo.insert()

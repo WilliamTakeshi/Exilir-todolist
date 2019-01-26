@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from "react";
 import ReactDOM from "react-dom";
-import update from 'immutability-helper';
+// import update from 'immutability-helper';
 
 export default class Lists extends React.Component {
   constructor(props) {
@@ -17,7 +17,6 @@ export default class Lists extends React.Component {
   componentDidMount() {
     axios.get('/api/lists')
       .then(response => {
-        console.log(response);
         this.setState({tasks: response.data.data})
       }).catch(error => {
         this.setState({"error": "Error loading your lists, please try again"});
@@ -37,7 +36,6 @@ export default class Lists extends React.Component {
   }
   
   _renderTaskCard(task) {
-    console.log(task)
     return(
       <div key={task.id} className="col s6 m4">
         <div className="card light-blue darken-2">
@@ -56,7 +54,8 @@ export default class Lists extends React.Component {
   render() {
     return (
       <div>
-        <center><a class="light-blue darken-2 waves-effect waves-light btn">Create List</a></center>
+        {this._renderError()}
+        <center><a href={"/lists/new"} className="light-blue darken-2 waves-effect waves-light btn">Create List</a></center>
         <div className="row">
           {this.state.tasks.map(task => this._renderTaskCard(task))}
         </div>
