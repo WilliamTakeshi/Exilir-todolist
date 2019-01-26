@@ -43,15 +43,24 @@ export default class ListsShow extends React.Component {
 
   _createNewTask(name, listId) {
     axios.post('/api/lists/' + listId + '/tasks', {task: {name: name, done: false}})
-      .then(_response => {
-        this._addNewTaskToState(_response.data.data)
+      .then(response => {
+        this._addNewTaskToState(response.data.data)
       }).catch(error => {
         this.setState({"error": error.response.data.errors.detail});
       });
   }
 
-  _editTaskName(name, task) {
-    console.log(name)
+  _handleRIEInputChange(value, task) {
+    this._editTask("name", value.name, task)
+  }
+
+  _editTask(field, value, task) {
+    axios.put('/api/lists/' + task.list_id + '/tasks/' + task.id, {task: {[field]: value}})
+      .then(response => {
+        this._updateNewTaskToState(response.data.data)
+      }).catch(error => {
+        this.setState({"error": error.response.data.errors.detail});
+      });
   }
 
   _getListId() {
@@ -89,7 +98,7 @@ export default class ListsShow extends React.Component {
           classEditing="input-field col s5 m5"
           className=" input-field col s5 m5"
           value={task.name}
-          change={name => this._editTaskName(name, task)}
+          change={name => this._handleRIEInputChange(name, task)}
           propName='name' />
         <i className="small material-icons">delete</i>
       </div>
@@ -120,6 +129,22 @@ export default class ListsShow extends React.Component {
         </center>
       </div>
     )
+  }
+
+  _updateNewTaskToState(task) {
+    const taskList = this.state.list.tasks
+    let idx;
+
+    for (let i=0; i < taskList.length; i++) {
+      if (taskList[i].id === task.id) {
+        idx=i;
+        break;
+      }
+    }
+    const newData = update(this.state.list, 
+        {tasks: {[idx]: {$set: task}}}
+    );
+    this.setState({"list": newData})
   }
 
   _updateList(field, value) {
