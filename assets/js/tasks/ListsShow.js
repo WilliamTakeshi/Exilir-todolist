@@ -2,31 +2,69 @@ import axios from 'axios';
 import React from "react";
 import ReactDOM from "react-dom";
 import update from 'immutability-helper';
+import {RIEInput} from 'riek'
 
 export default class ListsShow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       list: {
+        id: '',
+        inserted_at: '',
         name: '',
-        public: true,
+        public: '',
+        updated_at: '',
+        tasks: [],
       },
       error: ''
     }
+
+    this._addNewTaskToState = this._addNewTaskToState.bind(this);
+    this._handleKeyPress = this._handleKeyPress.bind(this);
+  }
+
+  _addNewTaskToState(task) {
+    const newData = update(this.state.list, {
+      tasks: {$push: [task]}
+    });
+
+    this.setState({"list": newData})
   }
 
   componentDidMount() {
-    axios.get('/api/lists/')
+    axios.get('/api/lists/' +  this._getListId())
+      .then(response => {
+        this.setState({list: response.data.data});
+        // window.location.href = "/";
+      }).catch(error => {
+        this.setState({"error": "Error loading your list, please try again"});
+      });
   }
 
-  _handleSubmit(e) {
-    e.preventDefault();
-    axios.post('/api/lists', {"list": this.state.list})
-      .then(response => {
-        window.location.href = "/lists/" + response.data.data.id
+  _createNewTask(name, listId) {
+    axios.post('/api/lists/' + listId + '/tasks', {task: {name: name, done: false}})
+      .then(_response => {
+        this._addNewTaskToState(_response.data.data)
       }).catch(error => {
         this.setState({"error": error.response.data.errors.detail});
       });
+  }
+
+  _editTaskName(name, task) {
+    console.log(name)
+  }
+
+  _getListId() {
+    const re = /lists\/(\d+)/;
+    var result = re.exec(document.URL);
+    return result[1];
+  }
+
+  _handleKeyPress(e) {
+    if (e.key == 'Enter') {
+      this.setState({newTaskName: ''});
+      this._createNewTask(this.state.newTaskName, this._getListId())
+    }
   }
 
   _renderError() {
@@ -40,44 +78,46 @@ export default class ListsShow extends React.Component {
     );
   }
 
+  _renderTask(task) {
+    return (
+      <div className="row" key={task.id}>
+        <label className="col s3 m3" style={{marginTop: '16px'}}>
+          <input type="checkbox" />
+          <span></span>
+        </label>
+        <RIEInput
+          classEditing="input-field col s5 m5"
+          className=" input-field col s5 m5"
+          value={task.name}
+          change={name => this._editTaskName(name, task)}
+          propName='name' />
+        <i className="small material-icons">delete</i>
+      </div>
+
+
+    )
+  }
+
   render() {
     return (
       <div>
-        <h3>Create a to-do list</h3>
-        {this._renderError()}       
-        <div className="container">
-          <div className="z-depth-1 grey lighten-4 row" style={{display: "inline-block", padding: "32px 48px 0px 48px", border: "1px solid #EEE"}}> 
-            <center>
-              <p>A trip? A project? A User Story? Insert the name your big next thing!</p>
-            <form className="col s12" onSubmit={(e) => this._handleSubmit(e)}>
-
-              <div className='row'>
-                <div className='input-field col s12'>
-                  <input className='validate' onChange={e => this._updateList("name", e.target.value)}  type='text' value={this.state.list.name} name='name' id='name' placeholder="Enter your list name"/>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col m6 s6'>
-                  <label>
-                    <input className="with-gap" name="group3" type="radio" checked={(this.state.list.public)} onChange={() => this._updateList("public", true)} />
-                    <span>Public</span>
-                  </label>
-                </div>
-                <div className='col m6 s6'>
-                  <label>
-                    <input className="with-gap" name="group3" type="radio" checked={!this.state.list.public} onChange={() => this._updateList("public", false)}/>
-                    <span>Private</span>
-                  </label>
-                </div>
-              </div>
-              <br/>
-              <div className='row'>
-                <button type='submit' name='btn_submit' className='col s12 btn btn-large waves-effect light-blue darken-2'>Submit</button>
-              </div>
-            </form>
-            </center>
+        <h3>{this.state.list.name}</h3>
+        <p>Created at, last updated at</p>
+        {this._renderError()} 
+        <br/><br/>  
+        <center>
+          <p>Break down time! Type the task name and hit enter</p>
+          <div className="row">
+            <div className="input-field col s12">
+              <input
+                type="text"
+                value={this.state.newTaskName}
+                onChange={e => this.setState({newTaskName: e.target.value})}
+                onKeyPress={this._handleKeyPress}></input>
+            </div>
           </div>
-        </div>
+          {this.state.list.tasks.map(task => this._renderTask(task))}
+        </center>
       </div>
     )
   }

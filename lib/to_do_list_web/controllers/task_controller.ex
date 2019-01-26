@@ -11,11 +11,11 @@ defmodule ToDoListWeb.TaskController do
     render(conn, "index.json", tasks: tasks)
   end
 
-  def create(conn, %{"task" => task_params}) do
-    with {:ok, %Task{} = task} <- Tasks.create_task(task_params) do
+  def create(conn, %{"task" => task_params, "list_id" => list_id}) do
+    with {:ok, %Task{} = task} <- Tasks.create_task(Map.put(task_params, "list_id", list_id)) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.list_task_path(conn, :show, task))
+      |> put_resp_header("location", Routes.list_task_path(conn, :show, list_id, task))
       |> render("show.json", task: task)
     end
   end

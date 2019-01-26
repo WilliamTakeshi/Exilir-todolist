@@ -50,10 +50,6 @@ export default class SignIn extends React.Component {
           <div className="z-depth-1 grey lighten-4 row" style={{display: "inline-block", padding: "32px 48px 0px 48px", border: "1px solid #EEE"}}>
             {this._renderError()}
             <form className="col s12" onSubmit={(e) => this._handleSubmit(e)}>
-              <div className='row'>
-                <div className='col s12'>
-                </div>
-              </div>
 
               <div className='row'>
                 <div className='input-field col s12'>
