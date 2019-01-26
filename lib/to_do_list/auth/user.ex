@@ -7,6 +7,7 @@ defmodule ToDoList.Auth.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :username, :string
+    has_many :lists, ToDoList.Tasks.List
 
     timestamps()
   end

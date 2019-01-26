@@ -42,6 +42,10 @@ defmodule ToDoListWeb.Router do
   scope "/api", ToDoListWeb do
     pipe_through [:api, :api_auth]
     resources "/users", UserController, except: [:new, :edit, :create]
+
+    resources "/lists", ListController, except: [:new, :edit] do
+      resources "/tasks", TaskController, except: [:new, :edit]
+    end
   end
 
   # Plug function
