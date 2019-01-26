@@ -11,7 +11,6 @@ defmodule ToDoList.TasksTest do
     @update_attrs %{name: "some updated name", public: false}
     @invalid_attrs %{name: nil, public: nil}
 
-
     @valid_user_attrs %{
       email: "some email",
       password: "some password",
@@ -29,6 +28,7 @@ defmodule ToDoList.TasksTest do
 
     def list_fixture(attrs \\ %{}) do
       %User{id: user_id} = user_fixture()
+
       {:ok, list} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -50,10 +50,13 @@ defmodule ToDoList.TasksTest do
 
     test "create_list/1 with valid data creates a list" do
       %User{id: user_id} = user_fixture()
-      result = %{}
+
+      result =
+        %{}
         |> Enum.into(@valid_attrs)
         |> Map.put(:user_id, user_id)
         |> Tasks.create_list()
+
       assert {:ok, %List{} = list} = result
       assert list.name == "some name"
       assert list.public == true
@@ -99,6 +102,7 @@ defmodule ToDoList.TasksTest do
 
     def task_fixture(attrs \\ %{}) do
       %List{id: list_id} = ToDoList.TasksTest.list_fixture()
+
       {:ok, task} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -121,7 +125,8 @@ defmodule ToDoList.TasksTest do
     test "create_task/1 with valid data creates a task" do
       %List{id: list_id} = ToDoList.TasksTest.list_fixture()
 
-      result = %{}
+      result =
+        %{}
         |> Enum.into(@valid_attrs)
         |> Map.put(:list_id, list_id)
         |> Tasks.create_task()
@@ -130,8 +135,6 @@ defmodule ToDoList.TasksTest do
       assert task.done == true
       assert task.name == "some name"
       assert task.list_id == list_id
-
-
     end
 
     test "create_task/1 with invalid data returns error changeset" do

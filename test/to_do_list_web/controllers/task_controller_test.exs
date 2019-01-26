@@ -41,6 +41,7 @@ defmodule ToDoListWeb.TaskControllerTest do
       |> Enum.into(@create_attrs)
       |> Map.put(:list_id, Map.get(list, :id))
       |> Tasks.create_task()
+
     task
   end
 
@@ -115,7 +116,6 @@ defmodule ToDoListWeb.TaskControllerTest do
       end
     end
   end
-
 
   defp create_task(_) do
     task = fixture(:task)

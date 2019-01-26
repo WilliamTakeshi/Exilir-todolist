@@ -11,8 +11,6 @@ defmodule ToDoListWeb.ListView do
   end
 
   def render("list.json", %{list: list}) do
-    %{id: list.id,
-      name: list.name,
-      public: list.public}
+    %{id: list.id, name: list.name, public: list.public}
   end
 end

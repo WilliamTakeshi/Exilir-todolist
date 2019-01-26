@@ -4,7 +4,6 @@ defmodule ToDoListWeb.ListController do
   alias ToDoList.Tasks
   alias ToDoList.Tasks.List
 
-
   action_fallback ToDoListWeb.FallbackController
 
   def index(conn, _params) do

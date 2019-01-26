@@ -5,7 +5,9 @@ defmodule ToDoListWeb.ErrorViewTest do
   import Phoenix.View
 
   test "renders 404.json" do
-    assert render(ToDoListWeb.ErrorView, "404.json", []) == %{errors: %{detail: "Endpoint not found!"}}
+    assert render(ToDoListWeb.ErrorView, "404.json", []) == %{
+             errors: %{detail: "Endpoint not found!"}
+           }
   end
 
   test "renders 500.json" do

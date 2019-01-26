@@ -57,6 +57,4 @@ defmodule ToDoListWeb.UserController do
         |> render("401.json", message: message)
     end
   end
-
-
 end

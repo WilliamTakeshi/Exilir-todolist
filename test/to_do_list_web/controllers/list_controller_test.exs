@@ -8,7 +8,7 @@ defmodule ToDoListWeb.ListControllerTest do
 
   @create_attrs %{
     name: "some name",
-    public: true,
+    public: true
   }
   @update_attrs %{
     name: "some updated name",
@@ -47,8 +47,11 @@ defmodule ToDoListWeb.ListControllerTest do
 
   describe "create list" do
     test "renders list when data is valid", %{conn: conn, current_user: %{id: user_id}} do
+      conn =
+        post(conn, Routes.list_path(conn, :create),
+          list: Map.put(@create_attrs, :user_id, user_id)
+        )
 
-      conn = post(conn, Routes.list_path(conn, :create), list: Map.put(@create_attrs, :user_id, user_id))
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.list_path(conn, :show, id))

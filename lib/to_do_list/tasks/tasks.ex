@@ -46,7 +46,6 @@ defmodule ToDoList.Tasks do
     List
     |> where(user_id: ^user_id)
     |> Repo.get!(id)
-
   end
 
   @doc """
@@ -63,6 +62,7 @@ defmodule ToDoList.Tasks do
   """
   def create_list(conn, attrs \\ %{}) do
     attrs = Map.put(attrs, "user_id", Helper.get_user_id(conn))
+
     %List{}
     |> List.changeset(attrs)
     |> Repo.insert()
@@ -115,7 +115,7 @@ defmodule ToDoList.Tasks do
       %Ecto.Changeset{source: %List{}}
 
   """
-  def change_list( %List{} = list) do
+  def change_list(%List{} = list) do
     List.changeset(list, %{})
   end
 

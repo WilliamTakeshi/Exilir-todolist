@@ -11,8 +11,6 @@ defmodule ToDoListWeb.TaskView do
   end
 
   def render("task.json", %{task: task}) do
-    %{id: task.id,
-      name: task.name,
-      done: task.done}
+    %{id: task.id, name: task.name, done: task.done}
   end
 end

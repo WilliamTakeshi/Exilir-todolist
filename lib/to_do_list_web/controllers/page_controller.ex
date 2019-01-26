@@ -9,7 +9,6 @@ defmodule ToDoListWeb.PageController do
       true -> conn |> redirect(to: Routes.page_path(conn, :lists))
       false -> render(conn, "index.html")
     end
-
   end
 
   def sign_in(conn, _params) do
@@ -17,9 +16,10 @@ defmodule ToDoListWeb.PageController do
       true ->
         conn
         |> redirect(to: Routes.page_path(conn, :lists))
-      false -> render(conn, "sign_in.html")
-    end
 
+      false ->
+        render(conn, "sign_in.html")
+    end
   end
 
   def sign_up(conn, _params) do

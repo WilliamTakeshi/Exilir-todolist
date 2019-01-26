@@ -40,13 +40,14 @@ defmodule ToDoListWeb.UserControllerTest do
   describe "index" do
     test "lists all users", %{conn: conn, current_user: current_user} do
       conn = get(conn, Routes.user_path(conn, :index))
+
       assert json_response(conn, 200)["data"] == [
-        %{
-          "id" => current_user.id,
-          "email" => current_user.email,
-          "username" => current_user.username
-        }
-      ]
+               %{
+                 "id" => current_user.id,
+                 "email" => current_user.email,
+                 "username" => current_user.username
+               }
+             ]
     end
   end
 
@@ -106,7 +107,10 @@ defmodule ToDoListWeb.UserControllerTest do
   end
 
   describe "sign_in user" do
-    test "renders user when user credentials (email) are good", %{conn: conn, current_user: current_user} do
+    test "renders user when user credentials (email) are good", %{
+      conn: conn,
+      current_user: current_user
+    } do
       conn =
         post(
           conn,
@@ -117,11 +121,18 @@ defmodule ToDoListWeb.UserControllerTest do
         )
 
       assert json_response(conn, 200)["data"] == %{
-               "user" => %{"id" => current_user.id, "email" => current_user.email, "username" => current_user.username}
+               "user" => %{
+                 "id" => current_user.id,
+                 "email" => current_user.email,
+                 "username" => current_user.username
+               }
              }
     end
 
-    test "renders user when user credentials (username) are good", %{conn: conn, current_user: current_user} do
+    test "renders user when user credentials (username) are good", %{
+      conn: conn,
+      current_user: current_user
+    } do
       conn =
         post(
           conn,
@@ -132,16 +143,21 @@ defmodule ToDoListWeb.UserControllerTest do
         )
 
       assert json_response(conn, 200)["data"] == %{
-               "user" => %{"id" => current_user.id, "email" => current_user.email, "username" => current_user.username}
+               "user" => %{
+                 "id" => current_user.id,
+                 "email" => current_user.email,
+                 "username" => current_user.username
+               }
              }
     end
 
     test "renders errors when user credentials are bad", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :sign_in, %{login: "nonexistent email", password: ""}))
+      conn =
+        post(conn, Routes.user_path(conn, :sign_in, %{login: "nonexistent email", password: ""}))
+
       assert json_response(conn, 401)["errors"] == %{"detail" => "Wrong email or password"}
     end
   end
-
 
   defp create_user(_) do
     user = fixture(:user)

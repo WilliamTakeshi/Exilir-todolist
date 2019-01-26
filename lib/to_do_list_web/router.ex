@@ -37,7 +37,6 @@ defmodule ToDoListWeb.Router do
     pipe_through :api
     post "/users/sign_in", UserController, :sign_in
     resources "/users", UserController, only: [:create]
-
   end
 
   scope "/api", ToDoListWeb do
