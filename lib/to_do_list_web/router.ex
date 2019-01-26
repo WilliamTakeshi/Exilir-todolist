@@ -24,6 +24,7 @@ defmodule ToDoListWeb.Router do
     get "/", PageController, :index
     get "/sign_in", PageController, :sign_in
     get "/sign_up", PageController, :sign_up
+    get "/sign_out", PageController, :sign_out
   end
 
   scope "/", ToDoListWeb do
