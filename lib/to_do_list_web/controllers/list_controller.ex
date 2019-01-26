@@ -21,12 +21,12 @@ defmodule ToDoListWeb.ListController do
   end
 
   def show(conn, %{"id" => id}) do
-    list = Tasks.get_list!(id)
+    list = Tasks.get_list!(conn, id)
     render(conn, "show.json", list: list)
   end
 
   def update(conn, %{"id" => id, "list" => list_params}) do
-    list = Tasks.get_list!(id)
+    list = Tasks.get_list!(conn, id)
 
     with {:ok, %List{} = list} <- Tasks.update_list(list, list_params) do
       render(conn, "show.json", list: list)
@@ -34,7 +34,7 @@ defmodule ToDoListWeb.ListController do
   end
 
   def delete(conn, %{"id" => id}) do
-    list = Tasks.get_list!(id)
+    list = Tasks.get_list!(conn, id)
 
     with {:ok, %List{}} <- Tasks.delete_list(list) do
       send_resp(conn, :no_content, "")

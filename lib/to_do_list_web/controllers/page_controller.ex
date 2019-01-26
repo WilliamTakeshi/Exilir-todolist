@@ -37,6 +37,10 @@ defmodule ToDoListWeb.PageController do
     render(conn, "lists_new.html")
   end
 
+  def lists_show(conn, _params) do
+    render(conn, "lists_show.html")
+  end
+
   defp is_authenticated?(conn) do
     case get_session(conn, :current_user_id) do
       nil -> false

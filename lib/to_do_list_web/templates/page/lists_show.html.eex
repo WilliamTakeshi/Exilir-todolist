@@ -1,0 +1,3 @@
+<div id="react_lists_show"></div>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/lists_show.js") %>"></script>

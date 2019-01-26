@@ -46,6 +46,7 @@ defmodule ToDoList.Tasks do
     List
     |> where(user_id: ^user_id)
     |> Repo.get!(id)
+    |> Repo.preload(:tasks)
   end
 
   @doc """

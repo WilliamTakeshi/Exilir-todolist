@@ -16,7 +16,7 @@ defmodule ToDoList.Tasks.Task do
   def changeset(task, attrs) do
     task
     |> cast(attrs, [:name, :done])
-    |> validate_required([:name, :done, :list_id])
-    |> assoc_constraint(:list)
+    |> validate_required([:name, :done])
+    |> cast_assoc(:list)
   end
 end

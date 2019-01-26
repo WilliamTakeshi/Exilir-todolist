@@ -17,6 +17,6 @@ defmodule ToDoList.Tasks.List do
     list
     |> cast(attrs, [:name, :public, :user_id])
     |> validate_required([:name, :public])
-    |> assoc_constraint(:user)
+    |> cast_assoc(:user)
   end
 end

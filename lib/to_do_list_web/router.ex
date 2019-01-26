@@ -31,6 +31,7 @@ defmodule ToDoListWeb.Router do
 
     get "/lists", PageController, :lists
     get "/lists/new", PageController, :lists_new
+    get "/lists/:id", PageController, :lists_show
   end
 
   scope "/api", ToDoListWeb do
