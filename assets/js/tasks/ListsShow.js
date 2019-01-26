@@ -91,19 +91,17 @@ export default class ListsShow extends React.Component {
     return (
       <div className="row" key={task.id}>
         <label className="col s3 m3" style={{marginTop: '16px'}}>
-          <input type="checkbox" />
+          <input type="checkbox" checked={task.done} onChange={e => this._editTask("done", e.target.checked, task)}/>
           <span></span>
         </label>
         <RIEInput
           classEditing="input-field col s5 m5"
-          className=" input-field col s5 m5"
+          className={"input-field col s5 m5" + (task.done ? ' finished-task' : '')}
           value={task.name}
           change={name => this._handleRIEInputChange(name, task)}
           propName='name' />
         <i className="small material-icons">delete</i>
       </div>
-
-
     )
   }
 
