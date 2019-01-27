@@ -24,15 +24,21 @@ export default class SignIn extends React.Component {
     e.preventDefault();
     const password = this.state.credentials.password;
     const password2 = this.state.credentials.password2;
-    if (password === password2) {
-      axios.post('/api/users', {"user": this.state.credentials})
-        .then(response => {
-          window.location.href = "/";
-        }).catch(error => {
-          this.setState({"error": error.response.data.errors.detail});
-        });
-    } else {
+    if (this.state.credentials.username === '') {
+      this.setState({"error": "Username is required"});
+    } else if (this.state.credentials.email === '') {
+      this.setState({"error": "Email is required"});
+    } else if (password === '') {
+      this.setState({"error": "Passwords is required"});
+    } else if (password !== password2) {
       this.setState({"error": "Passwords must be the same"});
+    } else {
+      axios.post('/api/users', {"user": this.state.credentials})
+        .then(_response => {
+          window.location.href = "/";
+        }).catch(_error => {
+          this.setState({"error": "Username or Email already used"});
+        });
     }
 
   }
@@ -52,7 +58,7 @@ export default class SignIn extends React.Component {
   render() {
     return (
       <center>
-        <h5 className="indigo-text">Please, login into your account</h5>
+        <h5 className="indigo-text">Join now the world leader To-Do lists</h5>
         <div className="section"></div>
 
         <div className="container">
@@ -90,14 +96,13 @@ export default class SignIn extends React.Component {
               <br />
               <center>
                 <div className='row'>
-                  <button type='submit' name='btn_login' className='col s12 btn btn-large waves-effect indigo'>Login</button>
+                  <button type='submit' name='btn_login' className='col s12 btn btn-large waves-effect indigo'>Sign Up</button>
                 </div>
               </center>
             </form>
           </div>
 
         </div>
-        <a href="#!">Create account</a>
       </center>
     )
   }

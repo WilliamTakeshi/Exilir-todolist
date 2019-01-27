@@ -76,7 +76,7 @@ export default class SignIn extends React.Component {
           </div>
 
         </div>
-        <a href="#!">Create account</a>
+        <a href="/sign_up">Create account</a>
       </center>
     )
   }
