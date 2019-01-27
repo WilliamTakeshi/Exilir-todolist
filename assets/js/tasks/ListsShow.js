@@ -189,13 +189,12 @@ export default class ListsShow extends React.Component {
           </div>
           {this.state.list.tasks.map(task => this._renderTask(task))}
           </span> :
-          '')}
-           {this.state.list.tasks.map(task => this._renderSomeoneTask(task))}
-          
-        </center>
+          <span>{this.state.list.tasks.map(task => this._renderSomeoneTask(task))}</span>)}
+
         {(isOwner ? 
-          <button className="btn" onClick={() => this.setState({showDeleteModal: true})}>Modal</button> :
+          <button className="btn red" onClick={() => this.setState({showDeleteModal: true})}>Delete</button> :
           '')}
+        </center>
       </div>
     )
   }

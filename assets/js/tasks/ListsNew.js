@@ -17,11 +17,14 @@ export default class ListsNew extends React.Component {
 
   _handleSubmit(e) {
     e.preventDefault();
+    console.log('+++++++++++++++++')
     axios.post('/api/lists', {"list": this.state.list})
       .then(response => {
+        console.log(response.data.data.id)
         window.location.href = "/lists/" + response.data.data.id
       }).catch(error => {
-        this.setState({"error": error.response.data.errors.detail});
+        console.log(error)
+        this.setState({"error": "Error creating the list, please try again later"});
       });
   }
 
@@ -68,7 +71,7 @@ export default class ListsNew extends React.Component {
               </div>
               <br/>
               <div className='row'>
-                <button type='submit' name='btn_submit' className='col s12 btn btn-large waves-effect light-blue darken-2'>Submit</button>
+                <button type='submit' name='btn_submit' className='col s12 btn btn-large waves-effect light-blue darken-2'>Create</button>
               </div>
             </form>
             </center>

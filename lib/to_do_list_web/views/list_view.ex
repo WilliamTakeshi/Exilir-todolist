@@ -7,6 +7,10 @@ defmodule ToDoListWeb.ListView do
   end
 
   def render("show.json", %{list: list}) do
+    %{data: render_one(list, ListView, "list.json")}
+  end
+
+  def render("showcomplete.json", %{list: list}) do
     %{data: render_one(list, ListView, "listcomplete.json")}
   end
 

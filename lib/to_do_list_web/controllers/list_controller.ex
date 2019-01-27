@@ -27,7 +27,7 @@ defmodule ToDoListWeb.ListController do
 
   def show(conn, %{"id" => id}) do
     list = Tasks.get_list!(conn, id)
-    render(conn, "show.json", list: list)
+    render(conn, "showcomplete.json", list: list)
   end
 
   def update(conn, %{"id" => id, "list" => list_params}) do
