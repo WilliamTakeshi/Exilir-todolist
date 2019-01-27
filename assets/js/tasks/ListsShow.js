@@ -149,9 +149,7 @@ export default class ListsShow extends React.Component {
 
   _renderSomeoneTask(task) {
     return (
-      <div className="row" key={task.id}>
-        <p className="input-field col s11 m11">{task.name}</p>
-      </div>
+      <li key={task.id}>{task.name}</li>
     )
   }
 
@@ -189,7 +187,7 @@ export default class ListsShow extends React.Component {
           </div>
           {this.state.list.tasks.map(task => this._renderTask(task))}
           </span> :
-          <span>{this.state.list.tasks.map(task => this._renderSomeoneTask(task))}</span>)}
+          <ul>{this.state.list.tasks.map(task => this._renderSomeoneTask(task))}</ul>)}
 
         {(isOwner ? 
           <button className="btn red" onClick={() => this.setState({showDeleteModal: true})}>Delete</button> :
