@@ -82,10 +82,11 @@ export default class ListsShow extends React.Component {
   }
 
   _deleteTaskState(task) {
-
+    let taskList = this.state.list.tasks.filter(t => t.id != task.id)
     const newData = update(this.state.list, 
       {tasks: {$set: taskList.filter(t => t.id != task.id)}}
     );
+
     this.setState({"list": newData})
   }
 
@@ -173,7 +174,7 @@ export default class ListsShow extends React.Component {
 
 
         <h3>{this.state.list.name}</h3>
-        <p>Created at, last updated at</p>
+        {/* <p>Created at, last updated at</p> */}
         {this._renderError()} 
         <br/><br/>  
         <center>

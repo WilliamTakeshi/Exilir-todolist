@@ -141,9 +141,9 @@ defmodule ToDoList.Tasks do
       [%Task{}, ...]
 
   """
-  def list_tasks do
-    Repo.all(Task)
-  end
+  # def list_tasks do
+  #   Repo.all(Task)
+  # end
 
   @doc """
   Gets a single task.
@@ -159,7 +159,25 @@ defmodule ToDoList.Tasks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_task!(id), do: Repo.get!(Task, id)
+  def get_task!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    query = from(t in Task,
+      join: l in assoc(t, :list),
+      where: (t.id == ^id) and ((l.user_id == ^user_id) or l.public == true))
+
+    Repo.one(query)
+  end
+
+  def get_own_task!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    query = from(t in Task,
+      join: l in assoc(t, :list),
+      where: (t.id == ^id) and (l.user_id == ^user_id))
+
+    Repo.one(query)
+  end
 
   @doc """
   Creates a task.

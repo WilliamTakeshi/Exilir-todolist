@@ -6,10 +6,10 @@ defmodule ToDoListWeb.TaskController do
 
   action_fallback ToDoListWeb.FallbackController
 
-  def index(conn, _params) do
-    tasks = Tasks.list_tasks()
-    render(conn, "index.json", tasks: tasks)
-  end
+  # def index(conn, _params) do
+  #   tasks = Tasks.list_tasks()
+  #   render(conn, "index.json", tasks: tasks)
+  # end
 
   def create(conn, %{"task" => task_params, "list_id" => list_id}) do
     with {:ok, %Task{} = task} <- Tasks.create_task(Map.put(task_params, "list_id", list_id)) do
@@ -21,23 +21,38 @@ defmodule ToDoListWeb.TaskController do
   end
 
   def show(conn, %{"id" => id}) do
-    task = Tasks.get_task!(id)
-    render(conn, "show.json", task: task)
+    case Tasks.get_task!(conn, id) do
+      %Task{} = task -> render(conn, "show.json", task: task)
+      _ ->
+        conn
+        |> put_view(ToDoListWeb.ErrorView)
+        |> render("401.json", %{message: "Unauthorized"})
+    end
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
-    task = Tasks.get_task!(id)
-
-    with {:ok, %Task{} = task} <- Tasks.update_task(task, task_params) do
-      render(conn, "show.json", task: task)
+    case Tasks.get_own_task!(conn, id) do
+      %Task{} = task ->
+        with {:ok, %Task{} = task} <- Tasks.update_task(task, task_params) do
+          render(conn, "show.json", task: task)
+        end
+      _ ->
+        conn
+        |> put_view(ToDoListWeb.ErrorView)
+        |> render("401.json", %{message: "Unauthorized"})
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    task = Tasks.get_task!(id)
-
-    with {:ok, %Task{}} <- Tasks.delete_task(task) do
-      send_resp(conn, :no_content, "")
+    case Tasks.get_own_task!(conn, id) do
+      %Task{} = task ->
+        with {:ok, %Task{}} <- Tasks.delete_task(task) do
+          send_resp(conn, :no_content, "")
+        end
+      _ ->
+        conn
+        |> put_view(ToDoListWeb.ErrorView)
+        |> render("401.json", %{message: "Unauthorized"})
     end
   end
 end
