@@ -25,4 +25,8 @@ defmodule ToDoListWeb.ErrorView do
   def render("500.json", _assigns) do
     %{errors: %{detail: "Internal server error :("}}
   end
+
+  def render("404.html", _assigns) do
+    "Page not found"
+  end
 end

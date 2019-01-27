@@ -42,8 +42,12 @@ export default class ListsShow extends React.Component {
           list: listData.data.data,
           user: userData.data.data
         })
-      })).catch(_error => {
-        this.setState({"error": "Error loading your list, please try again"});
+      })).catch(error => {
+        if (error.request.status === 404) {
+          window.location.href = "/404"
+        } else {
+          this.setState({"error": "Error loading your list, please try again"});
+        }
       });
   }
 

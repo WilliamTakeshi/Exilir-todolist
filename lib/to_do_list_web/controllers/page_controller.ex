@@ -35,4 +35,10 @@ defmodule ToDoListWeb.PageController do
   def lists_show(conn, _params) do
     render(conn, "lists_show.html", current_page: "lists_show")
   end
+
+  def page_404(conn, _params) do
+    conn
+    |> put_view(ToDoListWeb.ErrorView)
+    |> render("404.html", current_page: "page_404")
+  end
 end
