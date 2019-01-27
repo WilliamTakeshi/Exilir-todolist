@@ -1,0 +1,34 @@
+<center>
+  <h5 class="indigo-text">Please, login into your account</h5>
+  <div class="section"></div>
+
+  <div class="container">
+    <div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE">
+
+      <%= form_for @conn, Routes.session_path(@conn, :create), [as: :session], fn f -> %>
+        <div class='row'>
+          <div class='input-field col s12'>
+            <%= text_input f, :login, placeholder: "Username or email" %>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='input-field col s12'>
+            <%= password_input f, :password, placeholder: "Password" %>
+          </div>
+          <label >
+            <a class='pink-text' href='#!'><b>Forgot Password?</b></a>
+          </label>
+        </div>
+        <br />
+        <center>
+          <div class='row'>
+            <%= submit "Log in", class: "col s12 btn btn-large waves-effect light-blue darken-2"  %>
+          </div>
+        </center>
+      <% end %>
+  <a href="/sign_up">Create account</a>
+  </div>
+</center>
+
+
+

@@ -22,9 +22,9 @@ defmodule ToDoListWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/sign_in", PageController, :sign_in
     get "/sign_up", PageController, :sign_up
-    get "/sign_out", PageController, :sign_out
+    resources "/sessions", SessionController, only: [:new, :create]
+    get "/sign_out", SessionController, :sign_out
   end
 
   scope "/", ToDoListWeb do

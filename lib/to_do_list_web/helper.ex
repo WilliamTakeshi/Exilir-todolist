@@ -8,4 +8,12 @@ defmodule ToDoListWeb.Helper do
     |> Map.get(:assigns)
     |> Map.get(:current_user)
   end
+
+
+  def is_authenticated?(conn) do
+    case Plug.Conn.get_session(conn, :current_user_id) do
+      nil -> false
+      _ -> true
+    end
+  end
 end

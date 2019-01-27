@@ -14,7 +14,6 @@ module.exports = (env, options) => ({
   },
   entry:  {
     app: __dirname + '/js/app.js',
-    sign_in: __dirname + '/js/authentication/SignIn.js',
     sign_up: __dirname + '/js/authentication/SignUp.js',
     lists: __dirname + '/js/tasks/Lists.js',
     lists_new: __dirname + '/js/tasks/ListsNew.js',
