@@ -1,10 +1,9 @@
 defmodule ToDoListWeb.TaskControllerTest do
   use ToDoListWeb.ConnCase
   alias Plug.Test
-
-  alias ToDoList.Auth
-  alias ToDoList.Tasks
+  alias ToDoList.{Repo, Auth, Tasks}
   alias ToDoList.Tasks.Task
+  alias ToDoListWeb.Helper
 
   @create_attrs %{
     done: true,
@@ -24,25 +23,24 @@ defmodule ToDoListWeb.TaskControllerTest do
     username: "some username"
   }
 
-  def fixture(:task) do
-    {:ok, user} =
-      %{}
-      |> Enum.into(@valid_user_attrs)
-      |> Auth.create_user()
-
-    {:ok, list} =
-      %{}
-      |> Enum.into(@valid_list_attrs)
-      |> Map.put(:user_id, Map.get(user, :id))
-      |> Tasks.create_list()
+  def fixture(:task, conn) do
+    list = fixture(:list, conn)
 
     {:ok, task} =
       %{}
       |> Enum.into(@create_attrs)
-      |> Map.put(:list_id, Map.get(list, :id))
+      |> Map.put(:list_id, list.id)
       |> Tasks.create_task()
 
-    task
+    task |> Repo.preload(:list)
+  end
+
+  def fixture(:list, conn) do
+    user_id = Helper.get_user_id(conn)
+
+    {:ok, list} = Tasks.create_list(Map.put(@create_attrs, :user_id, user_id))
+
+    list
   end
 
   def fixture(:current_user) do
@@ -55,19 +53,13 @@ defmodule ToDoListWeb.TaskControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json"), current_user: current_user}
   end
 
-  describe "index" do
-    test "lists all tasks", %{conn: conn} do
-      conn = get(conn, Routes.list_task_path(conn, :index, "1"))
-      assert json_response(conn, 200)["data"] == []
-    end
-  end
-
   describe "create task" do
     test "renders task when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.list_task_path(conn, :create), task: @create_attrs)
+      list = fixture(:list, conn)
+      conn = post(conn, Routes.list_task_path(conn, :create, list.id), task: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.list_task_path(conn, :show, id))
+      conn = get(conn, Routes.list_task_path(conn, :show, list.id, id))
 
       assert %{
                "id" => id,
@@ -77,49 +69,44 @@ defmodule ToDoListWeb.TaskControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.list_task_path(conn, :create), task: @invalid_attrs)
+      list = fixture(:list, conn)
+      conn = post(conn, Routes.list_task_path(conn, :create, list.id), task: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "update task" do
-    setup [:create_task]
 
-    test "renders task when data is valid", %{conn: conn, task: %Task{id: id} = task} do
-      conn = put(conn, Routes.list_task_path(conn, :update, task), task: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+    test "renders task when data is valid", %{conn: conn} do
+      task = fixture(:task, conn)
+      task_id = task.id
+      conn = put(conn, Routes.list_task_path(conn, :update, task.list.id, task_id), task: @update_attrs)
+      assert %{"id" => ^task_id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.list_task_path(conn, :show, id))
+      conn = get(conn, Routes.list_task_path(conn, :show, task.list.id, task_id))
 
       assert %{
-               "id" => id,
+               "id" => task_id,
                "done" => false,
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, task: task} do
-      conn = put(conn, Routes.list_task_path(conn, :update, task), task: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn} do
+      task = fixture(:task, conn)
+      conn = put(conn, Routes.list_task_path(conn, :update, task.list.id, task.id), task: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "delete task" do
-    setup [:create_task]
 
-    test "deletes chosen task", %{conn: conn, task: task} do
-      conn = delete(conn, Routes.list_task_path(conn, :delete, task))
+    test "deletes chosen task", %{conn: conn} do
+      task = fixture(:task, conn)
+      conn = delete(conn, Routes.list_task_path(conn, :delete, task.list.id, task))
       assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.list_task_path(conn, :show, task))
-      end
+      assert get(conn, Routes.list_task_path(conn, :show, task.list.id, task)).assigns.message == "Not Found"
     end
-  end
-
-  defp create_task(_) do
-    task = fixture(:task)
-    {:ok, task: task}
   end
 
   defp setup_current_user(conn) do

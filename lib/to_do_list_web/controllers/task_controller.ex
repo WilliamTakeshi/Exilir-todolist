@@ -30,7 +30,7 @@ defmodule ToDoListWeb.TaskController do
       _ ->
         conn
         |> put_view(ToDoListWeb.ErrorView)
-        |> render("401.json", %{message: "Unauthorized"})
+        |> render("401.json", %{message: "Not Found"})
     end
   end
 
@@ -45,7 +45,7 @@ defmodule ToDoListWeb.TaskController do
       _ ->
         conn
         |> put_view(ToDoListWeb.ErrorView)
-        |> render("401.json", %{message: "Unauthorized"})
+        |> render("401.json", %{message: "Not Found"})
     end
   end
 
@@ -60,7 +60,7 @@ defmodule ToDoListWeb.TaskController do
       _ ->
         conn
         |> put_view(ToDoListWeb.ErrorView)
-        |> render("401.json", %{message: "Unauthorized"})
+        |> render("401.json", %{message: "Not Found"})
     end
   end
 end
