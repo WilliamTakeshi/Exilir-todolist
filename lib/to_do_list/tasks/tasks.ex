@@ -29,12 +29,11 @@ defmodule ToDoList.Tasks do
 
   def list_recent_lists(conn) do
     user_id = Helper.get_user_id(conn)
-
+    user_id = user_id || 0
     List
     |> where(public: true)
     |> where([l], l.user_id != ^user_id)
     |> order_by(desc: :updated_at)
-    |> IO.inspect()
     |> Repo.all()
   end
 

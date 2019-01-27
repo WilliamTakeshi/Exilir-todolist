@@ -3,7 +3,7 @@
     <h1 class="header center orange-text">Don't lose track of your goals</h1>
     <div class="row center">
       <h5 class="header col s12 light">Before starting your next thing, break it down into tasks! The best solution for getting started on anything big is to break it up into the small parts.</h5>
-      <h5 class="header col s12 light">Do you wanna know how to bake a chocolate cake? Or what are the best place to visit in Rome? You can see our users' public lists to start you activies.</h5>
+      <h5 class="header col s12 light">Do you wanna know how to bake a chocolate cake? Or what are the best place to visit in Rome? You can see <%= link "our users' public lists", to: Routes.page_path(@conn, :recent_lists) %> to start you activies.</h5>
     </div>
     <div class="row center">
       <%= link "Sign Up", to: Routes.page_path(@conn, :sign_up), class: "btn-large waves-effect waves-light orange" %>

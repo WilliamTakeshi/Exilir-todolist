@@ -26,6 +26,7 @@ defmodule ToDoListWeb.Router do
     get "/sign_up", PageController, :sign_up
     resources "/sessions", SessionController, only: [:new, :create]
     get "/sign_out", SessionController, :sign_out
+    get "/recent_lists", PageController, :recent_lists
   end
 
   scope "/", ToDoListWeb do
@@ -34,20 +35,19 @@ defmodule ToDoListWeb.Router do
     get "/lists", PageController, :lists
     get "/lists/new", PageController, :lists_new
     get "/lists/:id", PageController, :lists_show
-    get "/recent_lists", PageController, :recent_lists
   end
 
   scope "/api", ToDoListWeb do
     pipe_through :api
     # post "/users/sign_in", UserController, :sign_in
     resources "/users", UserController, only: [:create]
+    get "/recent_lists", ListController, :recent_lists
   end
 
   scope "/api", ToDoListWeb do
     pipe_through [:api, :api_auth]
     resources "/users", UserController, except: [:new, :edit, :create, :index, :delete]
     get "/whoami", UserController, :whoami
-    get "/recent_lists", ListController, :recent_lists
     resources "/lists", ListController, except: [:new, :edit, :update] do
       resources "/tasks", TaskController, except: [:new, :edit, :index]
     end
