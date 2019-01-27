@@ -4,6 +4,8 @@ defmodule ToDoListWeb.TaskController do
   alias ToDoList.Tasks
   alias ToDoList.Tasks.Task
 
+  alias ToDoListWeb.Helper
+
   action_fallback ToDoListWeb.FallbackController
 
   # def index(conn, _params) do
@@ -21,7 +23,9 @@ defmodule ToDoListWeb.TaskController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Tasks.get_task!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    case Tasks.get_task!(user_id, id) do
       %Task{} = task -> render(conn, "show.json", task: task)
       _ ->
         conn
@@ -31,7 +35,9 @@ defmodule ToDoListWeb.TaskController do
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
-    case Tasks.get_own_task!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    case Tasks.get_own_task!(user_id, id) do
       %Task{} = task ->
         with {:ok, %Task{} = task} <- Tasks.update_task(task, task_params) do
           render(conn, "show.json", task: task)
@@ -44,7 +50,9 @@ defmodule ToDoListWeb.TaskController do
   end
 
   def delete(conn, %{"id" => id}) do
-    case Tasks.get_own_task!(conn, id) do
+    user_id = Helper.get_user_id(conn)
+
+    case Tasks.get_own_task!(user_id, id) do
       %Task{} = task ->
         with {:ok, %Task{}} <- Tasks.delete_task(task) do
           send_resp(conn, :no_content, "")

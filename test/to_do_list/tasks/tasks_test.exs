@@ -3,6 +3,13 @@ defmodule ToDoList.TasksTest do
 
   alias ToDoList.{Tasks, Auth}
 
+  @current_user_attrs %{
+    email: "some current user email",
+    username: "some current user username",
+    password: "some current user password"
+  }
+
+
   describe "lists" do
     alias ToDoList.Tasks.List
     alias ToDoList.Auth.User
@@ -11,45 +18,34 @@ defmodule ToDoList.TasksTest do
     @update_attrs %{name: "some updated name", public: false}
     @invalid_attrs %{name: nil, public: nil}
 
-    @valid_user_attrs %{
-      email: "some email",
-      password: "some password",
-      username: "some username"
-    }
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_user_attrs)
-        |> Auth.create_user()
-
+    defp create_user() do
+      {:ok, user} = Auth.create_user(@current_user_attrs)
       user
     end
 
     def list_fixture(attrs \\ %{}) do
-      %User{id: user_id} = user_fixture()
-
+      user = create_user()
       {:ok, list} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Map.put(:user_id, user_id)
+        |> Map.put(:user_id, user.id)
         |> Tasks.create_list()
-
       list
     end
 
     test "list_lists/0 returns all lists" do
       list = list_fixture()
-      assert Tasks.list_lists() == [list]
+      assert Tasks.list_lists(list.user_id) == [list]
     end
 
     test "get_list!/1 returns the list with given id" do
-      list = list_fixture()
-      assert Tasks.get_list!(list.id) == list
+      list = list_fixture() |> Repo.preload(:tasks)
+
+      assert Tasks.get_list!(list.user_id, list.id) == list
     end
 
     test "create_list/1 with valid data creates a list" do
-      %User{id: user_id} = user_fixture()
+      %User{id: user_id} = create_user()
 
       result =
         %{}
@@ -75,15 +71,15 @@ defmodule ToDoList.TasksTest do
     end
 
     test "update_list/2 with invalid data returns error changeset" do
-      list = list_fixture()
+      list = list_fixture() |> Repo.preload(:tasks)
       assert {:error, %Ecto.Changeset{}} = Tasks.update_list(list, @invalid_attrs)
-      assert list == Tasks.get_list!(list.id)
+      assert list == Tasks.get_list!(list.user_id, list.id)
     end
 
     test "delete_list/1 deletes the list" do
       list = list_fixture()
       assert {:ok, %List{}} = Tasks.delete_list(list)
-      assert_raise Ecto.NoResultsError, fn -> Tasks.get_list!(list.id) end
+      assert_raise Ecto.NoResultsError, fn -> Tasks.get_list!(list.user_id, list.id) end
     end
 
     test "change_list/1 returns a list changeset" do
@@ -109,17 +105,12 @@ defmodule ToDoList.TasksTest do
         |> Map.put(:list_id, list_id)
         |> Tasks.create_task()
 
-      task
-    end
-
-    test "list_tasks/0 returns all tasks" do
-      task = task_fixture()
-      assert Tasks.list_tasks() == [task]
+      task |> Repo.preload(:list)
     end
 
     test "get_task!/1 returns the task with given id" do
       task = task_fixture()
-      assert Tasks.get_task!(task.id) == task
+      assert Tasks.get_task!(task.list.user_id, task.id) |> Repo.preload(:list) == task
     end
 
     test "create_task/1 with valid data creates a task" do
@@ -151,13 +142,13 @@ defmodule ToDoList.TasksTest do
     test "update_task/2 with invalid data returns error changeset" do
       task = task_fixture()
       assert {:error, %Ecto.Changeset{}} = Tasks.update_task(task, @invalid_attrs)
-      assert task == Tasks.get_task!(task.id)
+      assert task == Tasks.get_task!(task.list.user_id, task.id) |> Repo.preload(:list)
     end
 
     test "delete_task/1 deletes the task" do
       task = task_fixture()
       assert {:ok, %Task{}} = Tasks.delete_task(task)
-      assert_raise Ecto.NoResultsError, fn -> Tasks.get_task!(task.id) end
+      assert nil == Tasks.get_task!(task.list.user_id, task.id)
     end
 
     test "change_task/1 returns a task changeset" do

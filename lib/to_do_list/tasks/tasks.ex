@@ -7,7 +7,6 @@ defmodule ToDoList.Tasks do
   alias ToDoList.Repo
 
   alias ToDoList.Tasks.List
-  alias ToDoListWeb.Helper
 
   @doc """
   Returns the list of lists.
@@ -18,8 +17,7 @@ defmodule ToDoList.Tasks do
       [%List{}, ...]
 
   """
-  def list_lists(conn) do
-    user_id = Helper.get_user_id(conn)
+  def list_lists(user_id) do
 
     List
     |> where(user_id: ^user_id)
@@ -27,9 +25,7 @@ defmodule ToDoList.Tasks do
   end
 
 
-  def list_recent_lists(conn) do
-    user_id = Helper.get_user_id(conn)
-    user_id = user_id || 0
+  def list_recent_lists(user_id) do
     List
     |> where(public: true)
     |> where([l], l.user_id != ^user_id)
@@ -51,8 +47,7 @@ defmodule ToDoList.Tasks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_list!(conn, id) do
-    user_id = Helper.get_user_id(conn)
+  def get_list!(user_id, id) do
 
     List
     |> where(user_id: ^user_id)
@@ -73,9 +68,7 @@ defmodule ToDoList.Tasks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_list(conn, attrs \\ %{}) do
-    attrs = Map.put(attrs, "user_id", Helper.get_user_id(conn))
-
+  def create_list(attrs \\ %{}) do
     %List{}
     |> List.changeset(attrs)
     |> Repo.insert()
@@ -158,9 +151,7 @@ defmodule ToDoList.Tasks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_task!(conn, id) do
-    user_id = Helper.get_user_id(conn)
-
+  def get_task!(user_id, id) do
     query = from(t in Task,
       join: l in assoc(t, :list),
       where: (t.id == ^id) and ((l.user_id == ^user_id) or l.public == true))
@@ -168,9 +159,7 @@ defmodule ToDoList.Tasks do
     Repo.one(query)
   end
 
-  def get_own_task!(conn, id) do
-    user_id = Helper.get_user_id(conn)
-
+  def get_own_task!(user_id, id) do
     query = from(t in Task,
       join: l in assoc(t, :list),
       where: (t.id == ^id) and (l.user_id == ^user_id))
