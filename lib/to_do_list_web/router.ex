@@ -38,16 +38,16 @@ defmodule ToDoListWeb.Router do
 
   scope "/api", ToDoListWeb do
     pipe_through :api
-    post "/users/sign_in", UserController, :sign_in
+    # post "/users/sign_in", UserController, :sign_in
     resources "/users", UserController, only: [:create]
   end
 
   scope "/api", ToDoListWeb do
     pipe_through [:api, :api_auth]
-    resources "/users", UserController, except: [:new, :edit, :create]
+    resources "/users", UserController, except: [:new, :edit, :create, :index, :delete]
     get "/whoami", UserController, :whoami
     get "/recent_lists", ListController, :recent_lists
-    resources "/lists", ListController, except: [:new, :edit] do
+    resources "/lists", ListController, except: [:new, :edit, :update] do
       resources "/tasks", TaskController, except: [:new, :edit]
     end
   end

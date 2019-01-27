@@ -30,13 +30,13 @@ defmodule ToDoListWeb.ListController do
     render(conn, "showcomplete.json", list: list)
   end
 
-  def update(conn, %{"id" => id, "list" => list_params}) do
-    list = Tasks.get_list!(conn, id)
+  # def update(conn, %{"id" => id, "list" => list_params}) do
+  #   list = Tasks.get_list!(conn, id)
 
-    with {:ok, %List{} = list} <- Tasks.update_list(list, list_params) do
-      render(conn, "show.json", list: list)
-    end
-  end
+  #   with {:ok, %List{} = list} <- Tasks.update_list(list, list_params) do
+  #     render(conn, "show.json", list: list)
+  #   end
+  # end
 
   def delete(conn, %{"id" => id}) do
     list = Tasks.get_list!(conn, id)
