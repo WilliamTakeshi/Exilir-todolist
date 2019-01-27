@@ -15,9 +15,9 @@
           <div class='input-field col s12'>
             <%= password_input f, :password, placeholder: "Password" %>
           </div>
-          <label >
+          <!-- <label >
             <a class='pink-text' href='#!'><b>Forgot Password?</b></a>
-          </label>
+          </label> -->
         </div>
         <br />
         <center>

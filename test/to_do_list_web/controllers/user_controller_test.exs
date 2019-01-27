@@ -37,19 +37,19 @@ defmodule ToDoListWeb.UserControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json"), current_user: current_user}
   end
 
-  describe "index" do
-    test "lists all users", %{conn: conn, current_user: current_user} do
-      conn = get(conn, Routes.user_path(conn, :index))
+  # describe "index" do
+  #   test "lists all users", %{conn: conn, current_user: current_user} do
+  #     conn = get(conn, Routes.user_path(conn, :index))
 
-      assert json_response(conn, 200)["data"] == [
-               %{
-                 "id" => current_user.id,
-                 "email" => current_user.email,
-                 "username" => current_user.username
-               }
-             ]
-    end
-  end
+  #     assert json_response(conn, 200)["data"] == [
+  #              %{
+  #                "id" => current_user.id,
+  #                "email" => current_user.email,
+  #                "username" => current_user.username
+  #              }
+  #            ]
+  #   end
+  # end
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
@@ -93,71 +93,20 @@ defmodule ToDoListWeb.UserControllerTest do
     end
   end
 
-  describe "delete user" do
-    setup [:create_user]
+  # describe "delete user" do
+  #   setup [:create_user]
 
-    test "deletes chosen user", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :delete, user))
-      assert response(conn, 204)
+  #   test "deletes chosen user", %{conn: conn, user: user} do
+  #     conn = delete(conn, Routes.user_path(conn, :delete, user))
+  #     assert response(conn, 204)
 
-      assert_error_sent 404, fn ->
-        get(conn, Routes.user_path(conn, :show, user))
-      end
-    end
-  end
+  #     assert_error_sent 404, fn ->
+  #       get(conn, Routes.user_path(conn, :show, user))
+  #     end
+  #   end
+  # end
 
-  describe "sign_in user" do
-    test "renders user when user credentials (email) are good", %{
-      conn: conn,
-      current_user: current_user
-    } do
-      conn =
-        post(
-          conn,
-          Routes.user_path(conn, :sign_in, %{
-            login: current_user.email,
-            password: @current_user_attrs.password
-          })
-        )
 
-      assert json_response(conn, 200)["data"] == %{
-               "user" => %{
-                 "id" => current_user.id,
-                 "email" => current_user.email,
-                 "username" => current_user.username
-               }
-             }
-    end
-
-    test "renders user when user credentials (username) are good", %{
-      conn: conn,
-      current_user: current_user
-    } do
-      conn =
-        post(
-          conn,
-          Routes.user_path(conn, :sign_in, %{
-            login: current_user.email,
-            password: @current_user_attrs.password
-          })
-        )
-
-      assert json_response(conn, 200)["data"] == %{
-               "user" => %{
-                 "id" => current_user.id,
-                 "email" => current_user.email,
-                 "username" => current_user.username
-               }
-             }
-    end
-
-    test "renders errors when user credentials are bad", %{conn: conn} do
-      conn =
-        post(conn, Routes.user_path(conn, :sign_in, %{login: "nonexistent email", password: ""}))
-
-      assert json_response(conn, 401)["errors"] == %{"detail" => "Wrong email or password"}
-    end
-  end
 
   defp create_user(_) do
     user = fixture(:user)
