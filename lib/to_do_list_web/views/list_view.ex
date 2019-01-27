@@ -11,7 +11,7 @@ defmodule ToDoListWeb.ListView do
   end
 
   def render("list.json", %{list: list}) do
-    %{id: list.id, name: list.name, public: list.public}
+    %{id: list.id, name: list.name, public: list.public, user_id: list.user_id}
   end
 
   def render("listcomplete.json", %{list: list}) do
@@ -21,6 +21,7 @@ defmodule ToDoListWeb.ListView do
       public: list.public,
       updated_at: list.updated_at,
       inserted_at: list.inserted_at,
+      user_id: list.user_id,
       tasks: render_many(list.tasks, TaskView, "task.json")
     }
   end

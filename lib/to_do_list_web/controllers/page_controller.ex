@@ -42,6 +42,10 @@ defmodule ToDoListWeb.PageController do
     render(conn, "lists.html", current_page: "lists")
   end
 
+  def recent_lists(conn, _params) do
+    render(conn, "recent_lists.html", current_page: "recent_lists")
+  end
+
   def lists_new(conn, _params) do
     render(conn, "lists_new.html", current_page: "lists_new")
   end

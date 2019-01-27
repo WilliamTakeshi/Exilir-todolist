@@ -22,7 +22,7 @@
             <% else %>
               <li><%= link "My To-Do Lists", to: Routes.page_path(@conn, :lists) %></li>
               <li><%= link "Favorites", to: Routes.page_path(@conn, :sign_in) %></li>
-              <li><%= link "Recent Lists", to: Routes.page_path(@conn, :sign_in) %></li>
+              <li><%= link "Recent Lists", to: Routes.page_path(@conn, :recent_lists) %></li>
               <li><%= link "Account", to: Routes.page_path(@conn, :sign_in) %></li>
               <li><%= link "Sign Out", to: Routes.page_path(@conn, :sign_out) %></li>
             <% end %>

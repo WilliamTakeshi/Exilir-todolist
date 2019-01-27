@@ -26,6 +26,18 @@ defmodule ToDoList.Tasks do
     |> Repo.all()
   end
 
+
+  def list_recent_lists(conn) do
+    user_id = Helper.get_user_id(conn)
+
+    List
+    |> where(public: true)
+    |> where([l], l.user_id != ^user_id)
+    |> order_by(desc: :updated_at)
+    |> IO.inspect()
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single list.
 
@@ -45,6 +57,7 @@ defmodule ToDoList.Tasks do
 
     List
     |> where(user_id: ^user_id)
+    |> or_where(public: true)
     |> Repo.get!(id)
     |> Repo.preload(:tasks)
   end

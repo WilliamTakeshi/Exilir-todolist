@@ -41,6 +41,12 @@ defmodule ToDoListWeb.UserController do
     end
   end
 
+  def whoami(conn, _params) do
+    user = Auth.get_user!(get_session(conn, :current_user_id))
+    render(conn, "show.json", user: user)
+  end
+
+
   def sign_in(conn, %{"login" => login, "password" => password}) do
     case ToDoList.Auth.authenticate_user(login, password) do
       {:ok, user} ->

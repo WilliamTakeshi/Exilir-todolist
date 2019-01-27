@@ -11,6 +11,11 @@ defmodule ToDoListWeb.ListController do
     render(conn, "index.json", lists: lists)
   end
 
+  def recent_lists(conn, _params) do
+    lists = Tasks.list_recent_lists(conn)
+    render(conn, "index.json", lists: lists)
+  end
+
   def create(conn, %{"list" => list_params}) do
     with {:ok, %List{} = list} <- Tasks.create_list(conn, list_params) do
       conn

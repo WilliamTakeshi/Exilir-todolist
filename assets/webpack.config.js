@@ -19,6 +19,7 @@ module.exports = (env, options) => ({
     lists: __dirname + '/js/tasks/Lists.js',
     lists_new: __dirname + '/js/tasks/ListsNew.js',
     lists_show: __dirname + '/js/tasks/ListsShow.js',
+    recent_lists: __dirname + '/js/tasks/RecentLists.js',
   },
   output: {
     path: path.resolve(__dirname, '../priv/static/js'),

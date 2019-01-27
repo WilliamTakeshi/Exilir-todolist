@@ -1,0 +1,3 @@
+<div id="react_recent_lists"></div>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/recent_lists.js") %>"></script>

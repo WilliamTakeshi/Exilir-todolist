@@ -22,6 +22,7 @@ export default class ListsShow extends React.Component {
 
     this._addNewTaskToState = this._addNewTaskToState.bind(this);
     this._handleKeyPress = this._handleKeyPress.bind(this);
+    this._isOwner = this._isOwner.bind(this);
   }
 
   _addNewTaskToState(task) {
@@ -33,11 +34,15 @@ export default class ListsShow extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/api/lists/' +  this._getListId())
-      .then(response => {
-        this.setState({list: response.data.data});
-        // window.location.href = "/";
-      }).catch(_error => {
+    axios.all([
+      axios.get('/api/lists/' +  this._getListId()),
+      axios.get('/api/whoami'),
+    ]).then(axios.spread((listData, userData) => {
+        this.setState({
+          list: listData.data.data,
+          user: userData.data.data
+        })
+      })).catch(_error => {
         this.setState({"error": "Error loading your list, please try again"});
       });
   }
@@ -80,10 +85,6 @@ export default class ListsShow extends React.Component {
     this.setState({"list": newData})
   }
 
-  _handleRIEInputChange(value, task) {
-    this._editTask("name", value.name, task)
-  }
-
   _editTask(field, value, task) {
     axios.put('/api/lists/' + task.list_id + '/tasks/' + task.id, {task: {[field]: value}})
       .then(response => {
@@ -104,6 +105,17 @@ export default class ListsShow extends React.Component {
       this.setState({newTaskName: ''});
       this._createNewTask(this.state.newTaskName, this._getListId())
     }
+  }
+
+  _handleRIEInputChange(value, task) {
+    this._editTask("name", value.name, task)
+  }
+
+  _isOwner() {
+    if (this.state.list && this.state.user){
+      return this.state.list.user_id === this.state.user.id;
+    }
+    return false;
   }
 
   _renderError() {
@@ -135,22 +147,36 @@ export default class ListsShow extends React.Component {
     )
   }
 
+  _renderSomeoneTask(task) {
+    return (
+      <div className="row" key={task.id}>
+        <p className="input-field col s11 m11">{task.name}</p>
+      </div>
+    )
+  }
+
   render() {
+    const isOwner = this._isOwner();
     return (
       <div>
+        {(isOwner ? 
         <BasicModal
           show={this.state.showDeleteModal}
           title="Caution!"
           body="Are you sure you want to delete this list? It can not be recovered later."
           okClick={() => this._deleteList()}
           cancelClick={() => this.setState({showDeleteModal: false})}
-        />
+        /> :
+        '')}
+
 
         <h3>{this.state.list.name}</h3>
         <p>Created at, last updated at</p>
         {this._renderError()} 
         <br/><br/>  
         <center>
+          {(isOwner ? 
+          <span>
           <p>Break down time! Type the task name and hit enter</p>
           <div className="row">
             <div className="input-field col s12">
@@ -162,8 +188,14 @@ export default class ListsShow extends React.Component {
             </div>
           </div>
           {this.state.list.tasks.map(task => this._renderTask(task))}
+          </span> :
+          '')}
+           {this.state.list.tasks.map(task => this._renderSomeoneTask(task))}
+          
         </center>
-        <button className="btn" onClick={() => this.setState({showDeleteModal: true})}>Modal</button>
+        {(isOwner ? 
+          <button className="btn" onClick={() => this.setState({showDeleteModal: true})}>Modal</button> :
+          '')}
       </div>
     )
   }
