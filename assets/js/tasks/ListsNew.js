@@ -17,13 +17,10 @@ export default class ListsNew extends React.Component {
 
   _handleSubmit(e) {
     e.preventDefault();
-    console.log('+++++++++++++++++')
     axios.post('/api/lists', {"list": this.state.list})
       .then(response => {
-        console.log(response.data.data.id)
         window.location.href = "/lists/" + response.data.data.id
       }).catch(error => {
-        console.log(error)
         this.setState({"error": "Error creating the list, please try again later"});
       });
   }
