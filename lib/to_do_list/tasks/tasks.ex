@@ -6,7 +6,7 @@ defmodule ToDoList.Tasks do
   import Ecto.Query, warn: false
   alias ToDoList.Repo
 
-  alias ToDoList.Tasks.List
+  alias ToDoList.Tasks.{List, Favorite, Task}
 
   @doc """
   Returns the list of lists.
@@ -122,7 +122,6 @@ defmodule ToDoList.Tasks do
     List.changeset(list, %{})
   end
 
-  alias ToDoList.Tasks.Task
 
   @doc """
   Returns the list of tasks.
@@ -230,5 +229,11 @@ defmodule ToDoList.Tasks do
   """
   def change_task(%Task{} = task) do
     Task.changeset(task, %{})
+  end
+
+  def favorite_task(%{user_id: _user_id, task_id: _task_id} = params) do
+    %Favorite{}
+      |> Favorite.changeset(params)
+      |> Repo.insert()
   end
 end
