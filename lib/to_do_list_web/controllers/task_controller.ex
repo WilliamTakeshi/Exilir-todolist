@@ -63,4 +63,28 @@ defmodule ToDoListWeb.TaskController do
         |> render("401.json", %{message: "Not Found"})
     end
   end
+
+  def favorite(conn, %{"task_id" => task_id}) do
+    user_id = Helper.get_user_id(conn)
+
+    case Tasks.favorite_task(%{user_id: user_id, task_id: task_id}) do
+      {:ok, assoc} -> render(conn, "favorite.json", assoc: assoc)
+      {:error, _changeset} -> conn
+        |> put_view(ToDoListWeb.ErrorView)
+        |> put_status(:not_found)
+        |> render("404.json")
+    end
+  end
+
+  def unfavorite(conn, %{"task_id" => task_id}) do
+    user_id = Helper.get_user_id(conn)
+
+    case Tasks.unfavorite_task(%{user_id: user_id, task_id: task_id}) do
+      {:ok, _} -> render(conn, "success.json")
+      {:error, _changeset} -> conn
+        |> put_view(ToDoListWeb.ErrorView)
+        |> put_status(:not_found)
+        |> render("404.json")
+    end
+  end
 end

@@ -8,6 +8,7 @@ defmodule ToDoList.Tasks.Task do
     field :done, :boolean, default: false
     field :name, :string
     belongs_to :list, ToDoList.Tasks.List
+    many_to_many :followers, ToDoList.Auth.User, join_through: ToDoList.Tasks.Favorite
 
     timestamps()
   end

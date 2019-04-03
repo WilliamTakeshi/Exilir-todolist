@@ -23,6 +23,9 @@ export default class RecentLists extends React.Component {
       });
   }
 
+  _favoriteTask(task) {
+    axios.post('/api/unfavorite', {task_id: 1})
+  }
 
   _renderError() {
     let error = this.state.error;
@@ -44,6 +47,7 @@ export default class RecentLists extends React.Component {
           </div>
           <div className="card-action">
             <a href={"/lists/"+task.id}>Check</a>
+            <button onClick={() => this._favoriteTask(task)}>Check</button>
           </div>
         </div>
       </div>

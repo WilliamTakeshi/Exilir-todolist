@@ -1,3 +1,5 @@
 <div id="react_lists_new"></div>
 
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/lists_new.js") %>"></script>
+
+

@@ -48,6 +48,8 @@ defmodule ToDoListWeb.Router do
     pipe_through [:api, :api_auth]
     resources "/users", UserController, except: [:new, :edit, :create, :index, :delete]
     get "/whoami", UserController, :whoami
+    post "/favorite", TaskController, :favorite
+    post "/unfavorite", TaskController, :unfavorite
     resources "/lists", ListController, except: [:new, :edit, :update] do
       resources "/tasks", TaskController, except: [:new, :edit, :index]
     end

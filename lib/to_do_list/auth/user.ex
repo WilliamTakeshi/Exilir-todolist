@@ -8,6 +8,7 @@ defmodule ToDoList.Auth.User do
     field :password, :string, virtual: true
     field :username, :string
     has_many :lists, ToDoList.Tasks.List
+    many_to_many :favorites, ToDoList.Tasks.Task, join_through: ToDoList.Tasks.Favorite
 
     timestamps()
   end
