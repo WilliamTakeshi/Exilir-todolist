@@ -24,7 +24,7 @@ export default class RecentLists extends React.Component {
   }
 
   _favoriteTask(task) {
-    axios.post('/api/favorite', {task_id: task.id})
+    axios.post('/api/unfavorite', {task_id: 1})
   }
 
   _renderError() {

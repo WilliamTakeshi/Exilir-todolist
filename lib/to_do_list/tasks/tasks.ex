@@ -231,9 +231,26 @@ defmodule ToDoList.Tasks do
     Task.changeset(task, %{})
   end
 
-  def favorite_task(%{user_id: _user_id, task_id: _task_id} = params) do
-    %Favorite{}
-      |> Favorite.changeset(params)
-      |> Repo.insert()
+  def favorite_task(%{user_id: _user_id, task_id: task_id} = params) do
+
+    list = List
+    |> where(public: true)
+    |> Repo.get(task_id)
+
+    case list do
+      nil -> {:error, nil}
+      _otherwise -> %Favorite{}
+        |> Favorite.changeset(params)
+        |> Repo.insert()
+    end
+  end
+
+  def unfavorite_task(%{user_id: user_id, task_id: task_id}) do
+    Favorite
+      |> where(user_id: ^user_id)
+      |> where(task_id: ^task_id)
+      |> Repo.delete_all()
+
+    {:ok, nil}
   end
 end

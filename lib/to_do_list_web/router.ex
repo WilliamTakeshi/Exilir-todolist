@@ -49,7 +49,7 @@ defmodule ToDoListWeb.Router do
     resources "/users", UserController, except: [:new, :edit, :create, :index, :delete]
     get "/whoami", UserController, :whoami
     post "/favorite", TaskController, :favorite
-    # post "/unfavorite", TaskController, :unfavorite
+    post "/unfavorite", TaskController, :unfavorite
     resources "/lists", ListController, except: [:new, :edit, :update] do
       resources "/tasks", TaskController, except: [:new, :edit, :index]
     end

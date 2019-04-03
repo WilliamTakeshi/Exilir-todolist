@@ -17,4 +17,8 @@ defmodule ToDoListWeb.TaskView do
   def render("favorite.json", %{assoc: assoc}) do
     %{data: assoc}
   end
+
+  def render("success.json", _) do
+    %{data: "success"}
+  end
 end
